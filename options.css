@@ -1,0 +1,22 @@
+/* Copyright Marc-Antoine. */
+
+label {
+  font-weight: 700;
+}
+
+.result {
+  padding: 1em;
+}
+
+.failure {
+  border-color: red;
+  border-style: double;
+}
+
+input:valid {
+  background-color: #c0ffc0;
+}
+
+input:invalid {
+  background-color: #ffc0c0;
+}

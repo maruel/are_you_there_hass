@@ -1,0 +1,20 @@
+{
+  "manifest_version": 3,
+  "name": "Detect Locked Home Assistant",
+  "version": "0.0.1",
+  "author": "Marc-Antoine Ruel",
+  "description": "Send lock/active/idle status to a Home Assistant server to enable automation",
+  "icons": {"128": "eye-lock-open-outline-128.png"},
+  "homepage_url": "https://github.com/maruel/detect_locked_hass",
+  "background": {"service_worker": "background.js"},
+  "action": {
+    "default_icon": {"128": "eye-lock-open-outline-128.png"},
+    "default_title": "Options",
+    "default_popup": "options.html"
+  },
+  "options_ui": {"page": "options.html"},
+  "permissions": ["idle", "storage"],
+  "content_security_policy": {
+    "extension_pages": "default-src 'self'; connect-src https: http: data: blob: filesystem:;"
+  }
+}

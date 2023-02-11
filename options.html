@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<title>Detect Locked Home Assistant Options</title>
+<meta charset="utf-8">
+<meta name="author" content="Marc-Antoie Ruel">
+<link rel="icon" href="eye-lock-open-outline-128.png">
+<link href="options.css" rel="stylesheet">
+<script async src="options.js"></script>
+<div>
+  Get help at <a href="https://github.com/maruel/report_locked_hass">github.com/maruel/report_locked_hass</a>
+  <p>
+  <label for="host">Home Assistant base URL:</label>
+  <input type="url" id="host" name="host" required size="60"
+    list="hostURLs"
+    pattern="^https?://[a-z0-9\-:.]+$"
+    placeholder="e.g. http://homeassistant.local:8123">
+  <datalist id="hostURLs">
+    <option value="http://homeassistant.local:8123"></option>
+  </datalist>
+</div>
+<br>
+<div>
+  <label for="token">Home Assistant long lived token:</label>
+  <input type="text" id="token" name="token" required minlength="40" size="60"
+    placeholder="Retrieve from /profile on Home Assistant">
+  <br><span id="token_help"></span>
+</div>
+<br>
+<div>
+  <label for="entity_id">Entity ID:</label>
+  <input type="text" id="entity_id" name="entity_id" required size="60"
+    pattern="^[a-z][a-z_0-9]*$"
+    placeholder="input_select: key in Home Assistant configuration.yaml">
+  <br><span id="entity_id_help"></span>
+</div>
+<br>
+<div>
+  <label for="idle_timeout">Timeout to consider idle (seconds):</label>
+  <input type="number" id="idle_timeout" name="idle_timeout" required min="15"
+    value="300">
+</div>
+<br>
+<div id="result" class="result">
+</div>
