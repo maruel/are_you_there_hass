@@ -1,10 +1,16 @@
-# Chrome Extension to report desktop lock state to Home Assistant
+# Are you there? Hass
 
-Reports to Home Assistant when your laptop/workstation user session is active,
-locked or idle. While it works on any OS, it is particularly useful for
-ChromeOS. You can then automate turning on or off the lights when you
-unlock/lock your workstation, or [automate your
+**TL;DR:** Turn on the lights when you unlock your desktop/laptop.
+
+_Are you there? Hass_ is a Chrome extension that reports to [Home
+Assistant](https://home-assistant.io) when your desktop/laptop user session is
+active, locked or idle. While it works on any OS, it is particularly useful for
+ChromeOS.
+
+Home Assistant can then be automated when you unlock/lock your desktop/laptop to
+turn on/off the lights, or in the extreme case [automate your
 chair](https://github.com/maruel/emperor-esp8266).
+
 
 
 ## Setup
