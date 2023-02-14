@@ -1,16 +1,22 @@
-// Copyright Marc-Antoine.
+// Copyright 2022 Marc-Antoine Ruel. All rights reserved.
+// Use of this source code is governed under the Apache License, Version 2.0
+// that can be found in the LICENSE file.
 
 'use strict';
 
 function createText(id, text, url) {
   let link = document.createElement("a");
   link.href = url;
+  link.target = "_blank";
   link.innerText = url;
   document.getElementById(id).appendChild(document.createTextNode(text));
   document.getElementById(id).appendChild(link);
 }
 
 async function testIfItWorks() {
+  console.log("testIfItWorks()");
+  let result = document.getElementById("result");
+  result.innerText = "Testing...";
   let host = document.getElementById("host");
   let token = document.getElementById("token");
   let entity_id = document.getElementById("entity_id");
@@ -20,11 +26,21 @@ async function testIfItWorks() {
     document.getElementById("token_help").innerHTML = "";
   }
   document.getElementById("entity_id_help").innerHTML = "";
-  if (!host.validity.valid || !token.validity.valid || !entity_id.validity.valid) {
-    let elem = document.getElementById("result");
-    elem.innerText = "";
-    elem.classList.remove("failure");
+  let items = [];
+  if (!host.reportValidity()) {
+    items.push("host");
+  }
+  if (!token.reportValidity()) {
+    items.push("token");
+  }
+  if (!entity_id.reportValidity()) {
+    items.push("entity_id");
+  }
+  if (items.length) {
+    result.innerText = "Waiting on valid " + items.join(", ") + " data";
+    result.classList.remove("failure");
     save("valid", false);
+    console.log("testIfItWorks() skipped");
     return;
   }
 
@@ -37,20 +53,20 @@ async function testIfItWorks() {
     },
     body: JSON.stringify({entity_id: "input_select."+entity_id.value, option: "active"}),
   };
-  let elem = document.getElementById("result");
-  fetch(url, args)
+  await fetch(url, args)
     .then((resp) => resp.json())
     .then((data) => {
-      elem.innerText = "Success!";
-      elem.classList.remove("failure");
+      result.innerText = "Success!";
+      result.classList.remove("failure");
       // Tell background.js that the configuration is confirmed to be valid.
       save("valid", true);
       createText("entity_id_help", "See history at ", host.value + "/history?entity_id=input_select." + entity_id.value);
     }).catch((e) => {
-      elem.innerText = e.message;
-      elem.classList.add("failure");
+      result.innerText = e.message;
+      result.classList.add("failure");
       save("valid", false);
     });
+  console.log("testIfItWorks() done");
 }
 
 async function load(name) {
@@ -97,6 +113,7 @@ async function init() {
   });
 
   await testIfItWorks();
+  document.addEventListener('focus', testIfItWorks);
 }
 
 if (document.readyState === 'loading') {

@@ -1,13 +1,18 @@
-// Copyright Marc-Antoine.
+// Copyright 2022 Marc-Antoine Ruel. All rights reserved.
+// Use of this source code is governed under the Apache License, Version 2.0
+// that can be found in the LICENSE file.
 
 'use strict';
 
-const timestamp = () => `[${new Date().toISOString()}]`;
-const error = (...args) => console.error(timestamp(), ...args);
-function log(...args) {
-  // Uncomment to debug:
-  //console.log(timestamp(), ...args);
-}
+let logCopy = console.log;
+Object.defineProperty(console, "log", {
+  get: function () { return Function.prototype.bind.call(logCopy, console, `[${new Date().toISOString()}]`); }
+});
+let errorCopy = console.error;
+Object.defineProperty(console, "error", {
+  get: function () { return Function.prototype.bind.call(errorCopy, console, `[${new Date().toISOString()}]`); }
+});
+
 
 // Example values. Are overridden at load.
 let config = {
@@ -31,10 +36,10 @@ let config = {
 
 async function setEntityState(state) {
   if (!config.valid) {
-    log("State: " + state + "(not sending)");
+    console.log("State: " + state + "(not sending)");
     return;
   }
-  log("State: " + state);
+  console.log("State: " + state);
   let url = config.host + "/api/services/input_select/select_option";
   let args = {
     method: "POST",
@@ -48,13 +53,13 @@ async function setEntityState(state) {
     // Keeping the JSON decoding to ensure the returned data is valid JSON.
     .then((resp) => resp.json())
     .then((data) => {
-      log(data);
-    }).catch(error);
+      console.log(data);
+    }).catch(console.error);
 }
 
 async function load() {
   config = await chrome.storage.local.get(null);
-  log(config);
+  console.log(config);
   if (config.valid && config.idle_timeout) {
     chrome.idle.setDetectionInterval(config.idle_timeout);
     setEntityState("active");
