@@ -1,18 +1,24 @@
 {
   "manifest_version": 3,
   "name": "Are you there? Hass",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "author": "Marc-Antoine Ruel",
   "description": "Send lock/active/idle status to a Home Assistant server to enable automation",
   "icons": {"128": "eye-lock-open-outline-128.png"},
   "homepage_url": "https://github.com/maruel/are_you_there_hass",
-  "background": {"service_worker": "background.js"},
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
   "action": {
     "default_icon": {"128": "eye-lock-open-outline-128.png"},
     "default_title": "Options",
     "default_popup": "options.html"
   },
-  "options_ui": {"page": "options.html"},
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": true
+  },
   "permissions": ["idle", "storage"],
   "content_security_policy": {
     "extension_pages": "default-src 'self'; connect-src https: http: data: blob: filesystem:;"

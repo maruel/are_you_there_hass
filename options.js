@@ -2,7 +2,7 @@
 // Use of this source code is governed under the Apache License, Version 2.0
 // that can be found in the LICENSE file.
 
-'use strict';
+import {setEntitySelectState} from "./common.js";
 
 function createText(id, text, url) {
   let link = document.createElement("a");
@@ -27,14 +27,17 @@ async function testIfItWorks() {
   }
   document.getElementById("entity_id_help").innerHTML = "";
   let items = [];
-  if (!host.reportValidity()) {
+  if (!host.checkValidity()) {
     items.push("host");
   }
-  if (!token.reportValidity()) {
+  if (!token.checkValidity()) {
     items.push("token");
   }
   if (!entity_id.reportValidity()) {
     items.push("entity_id");
+    if (host.reportValidity()) {
+      createText("entity_id_help", "See entities at ", host.value + "/config/entities");
+    }
   }
   if (items.length) {
     result.innerText = "Waiting on valid " + items.join(", ") + " data";
@@ -44,17 +47,7 @@ async function testIfItWorks() {
     return;
   }
 
-  let url = host.value + "/api/services/input_select/select_option";
-  let args = {
-    method: "POST",
-    headers: {
-      "Authorization": "Bearer " + token.value,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({entity_id: "input_select."+entity_id.value, option: "active"}),
-  };
-  await fetch(url, args)
-    .then((resp) => resp.json())
+  await setEntitySelectState(host.value, token.value, entity_id.value, "active")
     .then((data) => {
       result.innerText = "Success!";
       result.classList.remove("failure");
@@ -96,7 +89,9 @@ async function saveElem(elem) {
 }
 
 async function init() {
-  await [...document.getElementsByTagName("input")].forEach(async (elem) => {
+  let elems = document.getElementsByTagName("input");
+  for (let i = 0; i < elems.length; i++) {
+    let elem = elems[i];
     // Load settings.
     let n = elem.getAttribute("name");
     let v = await load(n);
@@ -110,10 +105,8 @@ async function init() {
       await saveElem(elem);
       await testIfItWorks();
     });
-  });
-
+  }
   await testIfItWorks();
-  document.addEventListener('focus', testIfItWorks);
 }
 
 if (document.readyState === 'loading') {

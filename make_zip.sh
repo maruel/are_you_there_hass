@@ -10,6 +10,7 @@ if [ -f are_you_there_hass.zip ]; then
 fi
 zip -9 are_you_there_hass.zip \
   background.js \
+  common.js \
   eye-lock-open-outline-128.png \
   manifest.json \
   options.css \
