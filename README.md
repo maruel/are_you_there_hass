@@ -52,8 +52,9 @@ as you want.
 If you use
 [ip_ban_enabled](https://www.home-assistant.io/integrations/http/#ip_ban_enabled),
 it is possible that the IP may get banned while configuring. If an IP gets
-incorrectly banned while testing, zap out `ip_bans.yaml` and restart Home
-Assistant.
+incorrectly banned while testing, zap out
+[`ip_bans.yaml`](https://www.home-assistant.io/integrations/http/#ip-filtering-and-banning)
+and restart Home Assistant.
 
 
 ### Extension
