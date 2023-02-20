@@ -7,9 +7,14 @@
 <script type="module" src="options.js"></script>
 <div>
   Get help at <a
-    href="https://github.com/maruel/are_you_there_hass" target="_blank">github.com/maruel/are_you_there_hass</a>
+    href="https://github.com/maruel/are_you_there_hass"
+    target="_blank">github.com/maruel/are_you_there_hass</a>
   <p>
   <label for="host">Home Assistant base URL:</label>
+  <br>
+  It is recommended to use an external URL (https://) for laptops. An internal
+  URL is recommended for desktops.
+  <br>
   <input type="url" id="host" name="host" required size="60"
     list="hostURLs"
     pattern="^https?://[a-z0-9\-:.]+$"
@@ -19,8 +24,13 @@
   </datalist>
 </div>
 <br>
+<!-- input ids below need to match config in background.js. -->
 <div>
   <label for="token">Home Assistant long lived token:</label>
+  <br>
+  This tokens enables sending authenticated RPCs to Home Assistant to update the
+  entity's state.
+  <br>
   <input type="text" id="token" name="token" required minlength="40" size="60"
     placeholder="Retrieve from /profile on Home Assistant">
   <br><span id="token_help"></span>
@@ -28,6 +38,9 @@
 <br>
 <div>
   <label for="entity_id">Entity ID:</label>
+  <br>
+  The entity ID should be made of lower case characters, numbers and underscore.
+  <br>
   <!-- See VALID_ENTITY_ID at
     https://github.com/home-assistant/core/blob/master/homeassistant/core.py
     We only want the part after \.
@@ -40,6 +53,9 @@
 <br>
 <div>
   <label for="idle_timeout">Timeout to consider idle (seconds):</label>
+  <br>
+  Minimum value is 15s.
+  <br>
   <input type="number" id="idle_timeout" name="idle_timeout" required min="15"
     value="300">
 </div>

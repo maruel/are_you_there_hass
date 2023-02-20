@@ -1,6 +1,8 @@
-// Copyright 2022 Marc-Antoine Ruel. All rights reserved.
+// Copyright 2023 Marc-Antoine Ruel. All rights reserved.
 // Use of this source code is governed under the Apache License, Version 2.0
 // that can be found in the LICENSE file.
+
+// Javascript module used by both background.js and options.js.
 
 let logCopy = console.log;
 Object.defineProperty(console, "log", {
@@ -54,7 +56,7 @@ export async function setEntitySelectState(host, token, entity_id, state) {
     },
     body: JSON.stringify({entity_id: entity_id, option: state}),
   };
-  return fetch(url, args)
+  return await fetch(url, args)
     // Keeping the JSON decoding to ensure the returned data is valid JSON.
     .then((resp) => resp.json())
     // On 400 Bad Request, text (not JSON) is returned. Use this instead in this

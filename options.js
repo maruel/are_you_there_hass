@@ -1,6 +1,8 @@
-// Copyright 2022 Marc-Antoine Ruel. All rights reserved.
+// Copyright 2023 Marc-Antoine Ruel. All rights reserved.
 // Use of this source code is governed under the Apache License, Version 2.0
 // that can be found in the LICENSE file.
+
+// Code for options.html.
 
 import {getEntityState, setEntitySelectState} from "./common.js";
 
@@ -29,18 +31,21 @@ async function testIfItWorks() {
   }
   document.getElementById("entity_id_help").innerHTML = "";
   let items = [];
-  if (!host.checkValidity()) {
+  let hostValid = host.checkValidity();
+  let tokenValid = token.checkValidity();
+  let entityIdValid = entity_id.checkValidity();
+  if (!hostValid) {
     items.push("host");
   }
-  if (!token.checkValidity()) {
+  if (!tokenValid) {
     items.push("token");
   }
-  if (!entity_id.reportValidity()) {
+  if (!entityIdValid) {
     items.push("entity_id");
-    if (host.reportValidity()) {
+    if (hostValid) {
       createText("entity_id_help", "See entities at ", host.value + "/config/entities");
     }
-  } else if (host.checkValidity()) {
+  } else if (hostValid) {
     createText("entity_id_help", "See ", host.value + "/history?entity_id=input_select." + entity_id.value);
   }
   if (items.length) {
