@@ -57,7 +57,7 @@ incorrectly banned while testing, zap out
 and restart Home Assistant.
 
 
-### Extension
+### 2. Extension
 
 Install the extension.
 
@@ -69,6 +69,12 @@ Install the extension.
 Repeat once per desktop/laptop.
 
 You're good to go to automate!
+
+
+## Build
+
+This project was developed in [Vanilla JS](http://vanilla-js.com)! There's
+nothing to build. You can load this directory as-is as an unpacked extension!
 
 
 ## Icon
