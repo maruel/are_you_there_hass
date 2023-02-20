@@ -3,7 +3,7 @@
 // that can be found in the LICENSE file.
 
 
-import {setEntitySelectState} from "./common.js";
+import {getEntityState, setEntitySelectState} from "./common.js";
 
 
 // Example values. Are overridden at load.
@@ -21,24 +21,29 @@ let config = {
   idle_timeout: 300,
   // Generate from http://homeassistant.local/profile
   token: "",
-  // options.js sets it to true once it confirmed it can send a request to Home
-  // Assistant.
-  valid: false,
 };
 
-async function setEntityState(state) {
-  if (!config.valid) {
-    console.log("State: " + state + "(not sending)");
-    return;
+function isConfigValid() {
+  try {
+    // Ignore the result, the fact it worked is good enough. When the variable
+    // is created it may not have a valid value initially.
+    getEntityState(config.host, config.token, "input_select."+config.entity_id);
+    return true;
+  } catch (e) {
+    return false;
   }
-  await setEntitySelectState(config.host, config.token, config.entity_id, state)
+}
+
+async function setEntityState(state) {
+  // Silence errors, they are already logged.
+  await setEntitySelectState(config.host, config.token, "input_select."+config.entity_id, state)
     .catch(() => {});
 }
 
 async function load() {
   config = await chrome.storage.local.get(null);
-  console.log(config);
-  if (config.valid && config.idle_timeout) {
+  console.log("Got new config");
+  if (isConfigValid() && config.idle_timeout) {
     chrome.idle.setDetectionInterval(config.idle_timeout);
     setEntityState("active");
   }

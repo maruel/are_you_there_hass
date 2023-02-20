@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Are you there? Hass",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "author": "Marc-Antoine Ruel",
   "description": "Send lock/active/idle status to a Home Assistant server to enable automation",
   "icons": {"128": "eye-lock-open-outline-128.png"},

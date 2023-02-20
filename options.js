@@ -2,15 +2,17 @@
 // Use of this source code is governed under the Apache License, Version 2.0
 // that can be found in the LICENSE file.
 
-import {setEntitySelectState} from "./common.js";
+import {getEntityState, setEntitySelectState} from "./common.js";
 
 function createText(id, text, url) {
   let link = document.createElement("a");
   link.href = url;
   link.target = "_blank";
   link.innerText = url;
-  document.getElementById(id).appendChild(document.createTextNode(text));
-  document.getElementById(id).appendChild(link);
+  let e = document.getElementById(id);
+  e.innerHTML = "";
+  e.appendChild(document.createTextNode(text));
+  e.appendChild(link);
 }
 
 async function testIfItWorks() {
@@ -38,34 +40,46 @@ async function testIfItWorks() {
     if (host.reportValidity()) {
       createText("entity_id_help", "See entities at ", host.value + "/config/entities");
     }
+  } else if (host.checkValidity()) {
+    createText("entity_id_help", "See ", host.value + "/history?entity_id=input_select." + entity_id.value);
   }
   if (items.length) {
     result.innerText = "Waiting on valid " + items.join(", ") + " data";
     result.classList.remove("failure");
-    save("valid", false);
-    console.log("testIfItWorks() skipped");
-    return;
+    return false;
   }
 
-  await setEntitySelectState(host.value, token.value, entity_id.value, "active")
-    .then((data) => {
-      result.innerText = "Success!";
-      result.classList.remove("failure");
-      // Tell background.js that the configuration is confirmed to be valid.
-      save("valid", true);
-      createText("entity_id_help", "See history at ", host.value + "/history?entity_id=input_select." + entity_id.value);
-    }).catch((e) => {
-      result.innerText = e.message;
-      result.classList.add("failure");
-      save("valid", false);
-    });
-  console.log("testIfItWorks() done");
+  try {
+    let data = await setEntitySelectState(host.value, token.value, "input_select."+entity_id.value, "active");
+  } catch(e) {
+    result.innerText = e.message;
+    result.classList.add("failure");
+    return false;
+  }
+  let state;
+  try {
+    state = await getEntityState(host.value, token.value, "input_select."+entity_id.value);
+  } catch (e) {
+    result.innerText = "unexpected response: " + e;
+    result.classList.add("failure");
+    return false;
+  }
+  if (state != "active") {
+    result.innerText = "unexpected state: " + state;
+    result.classList.add("failure");
+    return false;
+  }
+  createText("entity_id_help", "See history at ", host.value + "/history?entity_id=input_select." + entity_id.value);
+  result.innerText = "Success!";
+  result.classList.remove("failure");
+  return true;
 }
 
 async function load(name) {
   if ("storage" in chrome) {
     return await chrome.storage.local.get(name).then((o) => o[name]);
   }
+  // When testing locally as a standalone page.
   return localStorage.getItem(name);
 }
 
@@ -75,6 +89,7 @@ async function save(name, value) {
     o[name] = value;
     await chrome.storage.local.set(o);
   } else {
+    // When testing locally as a standalone page.
     localStorage.setItem(name, value);
   }
 }
@@ -103,6 +118,8 @@ async function init() {
     // Save settings on change.
     elem.addEventListener("change", async (e) => {
       await saveElem(elem);
+    });
+    elem.addEventListener("focusout", async (e) => {
       await testIfItWorks();
     });
   }

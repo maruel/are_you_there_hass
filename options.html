@@ -28,8 +28,12 @@
 <br>
 <div>
   <label for="entity_id">Entity ID:</label>
+  <!-- See VALID_ENTITY_ID at
+    https://github.com/home-assistant/core/blob/master/homeassistant/core.py
+    We only want the part after \.
+    -->
   <input type="text" id="entity_id" name="entity_id" required size="60"
-    pattern="^[a-z][a-z_0-9]*$"
+    pattern="^(?!_)[\da-z_]+(?<!_)$"
     placeholder="input_select: key in Home Assistant configuration.yaml">
   <br><span id="entity_id_help"></span>
 </div>
