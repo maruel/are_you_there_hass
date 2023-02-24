@@ -42,7 +42,7 @@ chrome.idle.onStateChanged.addListener(async (state) => {
 // Reload configuration on service worker startup. We don't want to ping Home
 // Assistant every single time the server worker is restarted.
 chrome.storage.local.get(null).then((d) => {
-  if (!config) {
+  if (!d) {
     d = {
       webhook: "",
       idle_timeout: 30,
