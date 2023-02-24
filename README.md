@@ -46,7 +46,7 @@ template:
 
 replacing "laptop_1" (entity id) and "Laptop 1" (display name) with entity names
 of your choice. Add as many desktops as you want! ABCDEF should be a random >=32
-characters string.
+characters string. On linux you can generate one with: `apg -a1 -n1 -m32 -Mncl`
 
 
 ### 2. Extension
