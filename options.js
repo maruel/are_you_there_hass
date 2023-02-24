@@ -4,77 +4,26 @@
 
 // Code for options.html.
 
-import {getEntityState, setEntitySelectState} from "./common.js";
-
-function createText(id, text, url) {
-  let link = document.createElement("a");
-  link.href = url;
-  link.target = "_blank";
-  link.innerText = url;
-  let e = document.getElementById(id);
-  e.innerHTML = "";
-  e.appendChild(document.createTextNode(text));
-  e.appendChild(link);
-}
+import {callWebhook} from "./common.js";
 
 async function testIfItWorks() {
   console.log("testIfItWorks()");
   let result = document.getElementById("result");
-  result.innerText = "Testing...";
-  let host = document.getElementById("host");
-  let token = document.getElementById("token");
-  let entity_id = document.getElementById("entity_id");
-  if (host.validity.valid && !token.validity.valid) {
-    createText("token_help", "Generate one at ", host.value + "/profile");
-  } else {
-    document.getElementById("token_help").innerHTML = "";
-  }
-  document.getElementById("entity_id_help").innerHTML = "";
-  let items = [];
-  let hostValid = host.checkValidity();
-  let tokenValid = token.checkValidity();
-  let entityIdValid = entity_id.checkValidity();
-  if (!hostValid) {
-    items.push("host");
-  }
-  if (!tokenValid) {
-    items.push("token");
-  }
-  if (!entityIdValid) {
-    items.push("entity_id");
-    if (hostValid) {
-      createText("entity_id_help", "See entities at ", host.value + "/config/entities");
-    }
-  } else if (hostValid) {
-    createText("entity_id_help", "See ", host.value + "/history?entity_id=input_select." + entity_id.value);
-  }
-  if (items.length) {
-    result.innerText = "Waiting on valid " + items.join(", ") + " data";
-    result.classList.remove("failure");
+  let webhook = document.getElementById("webhook");
+  result.classList.remove("failure");
+  if (!webhook.checkValidity()) {
+    result.innerText = "";
     return false;
   }
+  result.innerText = "Testing...";
 
   try {
-    let data = await setEntitySelectState(host.value, token.value, "input_select."+entity_id.value, "active");
+    let data = await callWebhook(webhook.value, "active");
   } catch(e) {
     result.innerText = e.message;
     result.classList.add("failure");
     return false;
   }
-  let state;
-  try {
-    state = await getEntityState(host.value, token.value, "input_select."+entity_id.value);
-  } catch (e) {
-    result.innerText = "unexpected response: " + e;
-    result.classList.add("failure");
-    return false;
-  }
-  if (state != "active") {
-    result.innerText = "unexpected state: " + state;
-    result.classList.add("failure");
-    return false;
-  }
-  createText("entity_id_help", "See history at ", host.value + "/history?entity_id=input_select." + entity_id.value);
   result.innerText = "Success!";
   result.classList.remove("failure");
   return true;

@@ -9,64 +9,51 @@ ChromeOS.
 
 Home Assistant can then be automated when you unlock/lock your desktop/laptop to
 turn on/off the lights, or in the extreme case [automate your
-chair](https://github.com/maruel/emperor-esp8266).
-
-
+chair](https://github.com/maruel/emperor-esp8266). You can even use it to
+calculate how much you worked.
 
 ## Setup
 
 ### 1. Home Assistant configuration
 
-In your Home Assistant `configuration.yaml`, add
+In your Home Assistant `configuration.yaml`, add a [template triggered via a
+webhook](https://www.home-assistant.io/integrations/template/#sensor):
 
 ```
-# https://www.home-assistant.io/integrations/api
-api:
-
 # https://www.home-assistant.io/integrations/http
 http:
   cors_allowed_origins:
   - "*"
 
-# https://www.home-assistant.io/integrations/input_select
-input_select:
-  workstation_1:
-    name: "Workstation 1"
-    options:
-      - idle
-      - active
-      - locked
-    icon: mdi:eye-lock-open-outline
-  laptop_2:
-    name: "Laptop 2"
-    options:
-      - idle
-      - active
-      - locked
-    icon: mdi:eye-lock-open-outline
+# https://www.home-assistant.io/integrations/template/
+template:
+  - trigger:
+      - platform: webhook
+        webhook_id: laptop_1_ABCDEF
+    sensor:
+      - name: "Laptop 1"
+        unique_id: laptop_1
+        state: "{{trigger.json.state}}"
+  - trigger:
+      - platform: webhook
+        webhook_id: bigger_laptop_2_GHIJKL
+    sensor:
+      - name: "Bigger Laptop 2"
+        unique_id: bigger_laptop_2
+        state: "{{trigger.json.state}}"
+        icon: mdi:eye-lock-open-outline
 ```
 
-replacing workstation and laptop with entity names of your choice. Add as many
-as you want.
-
-If you use
-[ip_ban_enabled](https://www.home-assistant.io/integrations/http/#ip_ban_enabled),
-it is possible that the IP may get banned while configuring. If an IP gets
-incorrectly banned while testing, zap out
-[`ip_bans.yaml`](https://www.home-assistant.io/integrations/http/#ip-filtering-and-banning)
-and restart Home Assistant.
+replacing "laptop_1" (entity id) and "Laptop 1" (display name) with entity names
+of your choice. Add as many desktops as you want! ABCDEF should be a random >=32
+characters string.
 
 
 ### 2. Extension
 
-Install the extension.
-
-- Set the URL to your Home Assistant server.
-- Create a long lived token. The UI to do this is at the bottom of your profile
-  page in the Web UI.
-- Use the entity name that you specified in `configuration.yaml`.
-
-Repeat once per desktop/laptop.
+- Install the extension.
+- Set the URL to your Home Assistant server webhook in the form
+  http://host:port/api/webhook/<webhook_id>.
 
 You're good to go to automate!
 
@@ -76,6 +63,15 @@ You're good to go to automate!
 This project was developed in [Vanilla JS](http://vanilla-js.com)! There's
 nothing to build. You can load this directory as-is as an unpacked extension!
 
+
+## Testing
+
+```
+curl -XPOST -sS \
+  -H "Content-Type: application/json" \
+  -d '{"state":"locked"}' \
+  http://homeassistant.local:8123/api/webhook/laptop_1_ABCDEF
+```
 
 ## Icon
 
