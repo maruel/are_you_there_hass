@@ -62,12 +62,15 @@ chrome.storage.local.get(null).then((d) => {
 // https://devdocs.io/dom/networkinformation/change_event
 navigator.connection.addEventListener("change", function() {
   if (navigator.onLine) {
+    console.log("Network back up");
     // Opportunistically tries to send an update when network comes back online.
     // This can also help in scenarios like when network is over Ethernet over a
     // Thunderbolt 4 dock, which may take a few seconds to initialize.
     setTimeout(async function() {
       await setEntityState(lastState);
     }, 5000);
+  } else {
+    console.log("Network down");
   }
 });
 
