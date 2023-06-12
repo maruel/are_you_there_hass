@@ -68,7 +68,7 @@ navigator.connection.addEventListener("change", function() {
     // Thunderbolt 4 dock, which may take a few seconds to initialize.
     setTimeout(async function() {
       await setEntityState(lastState);
-    }, 5000);
+    }, 1000);
   } else {
     console.log("Network down");
   }
