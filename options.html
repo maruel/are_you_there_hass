@@ -16,7 +16,7 @@
   It is recommended to use an external URL (https://) for laptops. An internal
   URL is fine for desktops.
   <br>
-  <input type="url" id="webhook" name="webhook" required size="60"
+  <input type="url" id="webhook" name="webhook" required size="90"
     placeholder="e.g. http://homeassistant.local:8123/api/webhook/laptop_1_ABCD">
 </div>
 <br>
@@ -25,7 +25,8 @@
   <br>
   Minimum value is 15s.
   <br>
-  <input type="number" id="idle_timeout" name="idle_timeout" required min="15">
+  <input type="number" id="idle_timeout" name="idle_timeout" required min="15"
+    value="30">
 </div>
 <br>
 <div id="result" class="result">Waiting on attempt</div>

@@ -9,6 +9,8 @@ import {callWebhook} from "./common.js";
 
 // Global configuration as stored in localStorage.
 let config = null;
+// Last state as retrieved by chrome.idle, to be resent when network changes.
+let lastState = "idle";
 
 async function setEntityState(state) {
   if (config == null || !config.webhook) {
@@ -36,6 +38,7 @@ chrome.storage.onChanged.addListener(async (changes, namespace) => {
 
 // https://developer.chrome.com/docs/extensions/reference/idle/
 chrome.idle.onStateChanged.addListener(async (state) => {
+  lastState = state;
   await setEntityState(state);
 });
 
@@ -53,6 +56,18 @@ chrome.storage.local.get(null).then((d) => {
   config = d;
   if (config.idle_timeout >= 15) {
     chrome.idle.setDetectionInterval(config.idle_timeout);
+  }
+});
+
+// https://devdocs.io/dom/networkinformation/change_event
+navigator.connection.addEventListener("change", function() {
+  if (navigator.onLine) {
+    // Opportunistically tries to send an update when network comes back online.
+    // This can also help in scenarios like when network is over Ethernet over a
+    // Thunderbolt 4 dock, which may take a few seconds to initialize.
+    setTimeout(async function() {
+      await setEntityState(lastState);
+    }, 5000);
   }
 });
 
