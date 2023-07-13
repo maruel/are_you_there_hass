@@ -51,7 +51,8 @@ characters string. On linux you can generate one with: `apg -a1 -n1 -m32 -Mncl`
 
 ### 2. Extension
 
-- Install the extension.
+- Install the extension:
+  https://chrome.google.com/webstore/detail/pckenignbbjlkjnhdldpbamlnncbehpc
 - Set the URL to your Home Assistant server webhook in the form
   http://host:port/api/webhook/<webhook_id>.
 
