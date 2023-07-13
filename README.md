@@ -20,39 +20,33 @@ In your Home Assistant `configuration.yaml`, add a [template triggered via a
 webhook](https://www.home-assistant.io/integrations/template/#sensor):
 
 ```
-# https://www.home-assistant.io/integrations/http
+# https://home-assistant.io/integrations/http
 http:
   cors_allowed_origins:
   - "*"
 
-# https://www.home-assistant.io/integrations/template/
+# https://home-assistant.io/integrations/template
 template:
   - trigger:
       - platform: webhook
-        webhook_id: laptop_1_ABCDEF
+        webhook_id: my_laptop_ABCDEF
     sensor:
-      - name: "Laptop 1"
-        unique_id: laptop_1
-        state: "{{trigger.json.state}}"
-  - trigger:
-      - platform: webhook
-        webhook_id: bigger_laptop_2_GHIJKL
-    sensor:
-      - name: "Bigger Laptop 2"
-        unique_id: bigger_laptop_2
+      - name: "My Laptop"
+        unique_id: my_laptop
         state: "{{trigger.json.state}}"
         icon: mdi:eye-lock-open-outline
 ```
 
-replacing "laptop_1" (entity id) and "Laptop 1" (display name) with entity names
-of your choice. Add as many desktops as you want! ABCDEF should be a random >=32
-characters string. On linux you can generate one with: `apg -a1 -n1 -m32 -Mncl`
+replacing "my_laptop" (entity id) and "My Laptop" (display name) with entity
+names of your choice. Add as many desktops as you want! ABCDEF should be a
+random >=32 characters string. On linux you can generate one with: `apg -a1 -n1
+-m32 -Mncl`
 
 
 ### 2. Extension
 
 - Install the extension:
-  https://chrome.google.com/webstore/detail/pckenignbbjlkjnhdldpbamlnncbehpc
+  [chrome.google.com/webstore/detail/pckenignbbjlkjnhdldpbamlnncbehpc](https://chrome.google.com/webstore/detail/pckenignbbjlkjnhdldpbamlnncbehpc)
 - Set the URL to your Home Assistant server webhook in the form
   http://host:port/api/webhook/<webhook_id>.
 
@@ -71,7 +65,7 @@ nothing to build. You can load this directory as-is as an unpacked extension!
 curl -XPOST -sS \
   -H "Content-Type: application/json" \
   -d '{"state":"locked"}' \
-  http://homeassistant.local:8123/api/webhook/laptop_1_ABCDEF
+  http://homeassistant.local:8123/api/webhook/my_laptop_ABCDEF
 ```
 
 ## Icon
